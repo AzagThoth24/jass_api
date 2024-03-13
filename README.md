@@ -1,0 +1,3 @@
+# wip...
+# 利用ReturnBug实现jass与c++的交互
+示例地图和dll在release里
