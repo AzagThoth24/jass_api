@@ -21,12 +21,36 @@
     <ClInclude Include="pch.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="jass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="fp_call.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="game_struct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="japi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="init.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="jass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="japi.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="example.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
