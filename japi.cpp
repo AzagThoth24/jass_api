@@ -86,7 +86,7 @@ void __declspec(naked) parser_hook::board() {
 // handler
 // 通过跳板来调用
 void __fastcall parser_hook::handler(JassVM* jvm, JapiFuncStruct* japi_func, OPCodeStruct* opcode) {
-	if (!japi_func || opcode->op != OPCODE_CALLJAPI) return;	// 安全性判定，同时只处理OPCODE_CALLJAPI
+	if (opcode->op != OPCODE_CALLJAPI || !japi_func || !japi_func->func_addr) return;	// 安全性判定，同时只处理OPCODE_CALLJAPI
 
 	// 将jass函数栈中的元素dump到缓冲区
 	auto dump_param = [=]() {
@@ -108,7 +108,11 @@ void __fastcall parser_hook::handler(JassVM* jvm, JapiFuncStruct* japi_func, OPC
 	};
 
 	dump_param();
-	uint32_t res = caller(japi_func);	// 调用japi函数，并记录其返回值
+	uint32_t res = c_call<uint32_t>(japi_func->func_addr,
+		param_buffer[0], param_buffer[1], param_buffer[2], param_buffer[3],
+		param_buffer[4], param_buffer[5], param_buffer[6], param_buffer[7],
+		param_buffer[8], param_buffer[9], param_buffer[10], param_buffer[11],
+		param_buffer[12], param_buffer[13], param_buffer[14], param_buffer[15]);	// 调用japi函数并记录其返回值
 
 	// 如果函数有返回值，则设置r00的值，因为r00寄存器固定存放返回值
 	uint32_t ret_type = japi_func->ret_type;
