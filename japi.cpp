@@ -15,10 +15,6 @@ namespace japi {
 		// 跳转表 长度为最后的那个字节码 - 1
 		static void* opcodeSwitchTable[OPCODE_CALLJAPI - 1];
 
-		// 调用器
-		// @param japi_func: japi函数的地址
-		static uint32_t __fastcall caller(JapiFuncStruct* japi_func);
-
 		// 跳板
 		static void board();
 
@@ -37,36 +33,6 @@ namespace japi {
 using namespace japi;
 
 // 解释器hook
-
-// 调用器
-// 不确定参数个数，因此使用naked函数配合内联汇编来写这个函数
-uint32_t __declspec(naked) __fastcall parser_hook::caller(JapiFuncStruct* japi_func) {
-	__asm {
-		push ebp;
-		mov ebp, esp;
-		push dword ptr ds : [param_buffer + 0x3C];
-		push dword ptr ds : [param_buffer + 0x38];
-		push dword ptr ds : [param_buffer + 0x34];
-		push dword ptr ds : [param_buffer + 0x30];
-		push dword ptr ds : [param_buffer + 0x2C];
-		push dword ptr ds : [param_buffer + 0x28];
-		push dword ptr ds : [param_buffer + 0x24];
-		push dword ptr ds : [param_buffer + 0x20];
-		push dword ptr ds : [param_buffer + 0x1C];
-		push dword ptr ds : [param_buffer + 0x18];
-		push dword ptr ds : [param_buffer + 0x14];
-		push dword ptr ds : [param_buffer + 0x10];
-		push dword ptr ds : [param_buffer + 0xC];
-		push dword ptr ds : [param_buffer + 0x8];
-		push dword ptr ds : [param_buffer + 0x4];
-		push dword ptr ds : [param_buffer + 0x0];
-		call dword ptr ds : [ecx] ;	// 函数地址是JapiFuncStruct中第一个成员变量
-		add esp, 0x40;
-		mov esp, ebp;
-		pop ebp;
-		ret;
-	}
-}
 
 // 跳板
 // 跳转时: eax = op - 2; ebx = jvm; edx = param; edi = opcode
@@ -108,11 +74,14 @@ void __fastcall parser_hook::handler(JassVM* jvm, JapiFuncStruct* japi_func, OPC
 	};
 
 	dump_param();
+
+	// 调用japi函数并记录其返回值
+	// japi函数使用cdecl，因此可以不关心japi函数实际参数个数，固定推入16个参数进去
 	uint32_t res = c_call<uint32_t>(japi_func->func_addr,
 		param_buffer[0], param_buffer[1], param_buffer[2], param_buffer[3],
 		param_buffer[4], param_buffer[5], param_buffer[6], param_buffer[7],
 		param_buffer[8], param_buffer[9], param_buffer[10], param_buffer[11],
-		param_buffer[12], param_buffer[13], param_buffer[14], param_buffer[15]);	// 调用japi函数并记录其返回值
+		param_buffer[12], param_buffer[13], param_buffer[14], param_buffer[15]);
 
 	// 如果函数有返回值，则设置r00的值，因为r00寄存器固定存放返回值
 	uint32_t ret_type = japi_func->ret_type;

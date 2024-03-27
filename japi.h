@@ -3,6 +3,7 @@
 #include "jass.h"
 #include <unordered_map>
 
+// 采用cdecl调用，因此可以不用关心japi函数实际参数个数
 #define JAPI_CALL __cdecl
 
 // 用于记录japi函数的信息

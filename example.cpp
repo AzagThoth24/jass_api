@@ -26,7 +26,8 @@ void JAPI_CALL JAPI_EXAMPLE::test(int32_t arg1) {
 	};
 
 	open_console();
-	std::cout << "arg1为: " << arg1 << std::endl;	// 在控制台输出
+	std::cout	<< "调用c++函数: test" << std::endl
+				<< "	arg1为: " << arg1 << std::endl;	// 在控制台输出
 }
 
 void example_init() {
